@@ -51,3 +51,36 @@ export const getUserTasks = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
+export const updateTask = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { text } = req.body;
+
+    const userId = req.user._id;
+
+    let task = await Task.findById(id);
+    if (!task) {
+      return res.status(404).json({ message: "Task does not exist" });
+    }
+
+    if (userId.toString() !== task.user.toString()) {
+      return res
+        .status(401)
+        .json({ message: "You are not authorized to update this task" });
+    }
+
+    if (!text) {
+      return res.status(400).json({ error: "Task must have some text" });
+    }
+
+    task.text = text || task.text;
+
+    task = await task.save();
+
+    return res.status(200).json(task);
+  } catch (error) {
+    console.log("Error in updateTask: ", error.message);
+    res.status(500).json({ error: error.message });
+  }
+};
