@@ -116,6 +116,26 @@ export const completeTask = async (req, res) => {
   }
 };
 
+export const searchTask = async (req, res) => {
+  try {
+    const { text } = req.body;
+
+    if (!text) {
+      return res.status(400).json({ error: "Search text is required" });
+    }
+
+    const tasks = await Task.find({
+      user: req.user._id,
+      text: { $regex: text, $options: "i" },
+    }).sort({ createdAt: -1 });
+
+    res.status(200).json(tasks);
+  } catch (error) {
+    console.log("Error in searchTask controller", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
 export const deleteTask = async (req, res) => {
   try {
     const task = await Task.findById(req.params.id);
