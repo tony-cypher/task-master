@@ -84,3 +84,27 @@ export const updateTask = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+export const deleteTask = async (req, res) => {
+  try {
+    const task = await Task.findById(req.params.id);
+
+    if (!task) {
+      return res.status(404).json({ error: "Task not found" });
+    }
+
+    if (task.user.toString() !== req.user._id.toString()) {
+      return res
+        .status(401)
+        .json({ error: "You are not allowed to delete this task" });
+    }
+
+    await Task.findByIdAndDelete(req.params.id);
+
+    // sends a success message
+    res.status(200).json({ message: "Task deleted successfully" });
+  } catch (error) {
+    console.log("Error in deleteTask controller: ", error.message);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
