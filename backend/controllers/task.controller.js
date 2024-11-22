@@ -85,6 +85,37 @@ export const updateTask = async (req, res) => {
   }
 };
 
+export const completeTask = async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    let task = await Task.findById(req.params.id);
+
+    if (!task) {
+      return res.status(404).json({ error: "Task not found" });
+    }
+
+    if (userId.toString() !== task.user.toString()) {
+      return res
+        .status(401)
+        .json({ message: "You are not allowed to complete task" });
+    }
+
+    if (task.completed) {
+      task.completed = false;
+    } else {
+      task.completed = true;
+    }
+
+    task = await task.save();
+
+    res.status(200).json(task);
+  } catch (error) {
+    console.log("Error in completeTask controller: ", error.message);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
 export const deleteTask = async (req, res) => {
   try {
     const task = await Task.findById(req.params.id);
@@ -101,7 +132,6 @@ export const deleteTask = async (req, res) => {
 
     await Task.findByIdAndDelete(req.params.id);
 
-    // sends a success message
     res.status(200).json({ message: "Task deleted successfully" });
   } catch (error) {
     console.log("Error in deleteTask controller: ", error.message);
