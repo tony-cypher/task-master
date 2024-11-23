@@ -1,11 +1,59 @@
 import { useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import { useMutation } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import LoadingSpinner from "./LoadingSpinner";
 
 const Navbar = () => {
   const [theme, setTheme] = useState("dark");
+
+  // create post
   const [text, setText] = useState("");
 
+  // get current user and reset query
+  const { data: authUser } = useQuery({ queryKey: ["authUser"] });
+  const queryClient = useQueryClient();
+
+  // create post function
+  const {
+    mutate: createPost,
+    isPending,
+    isError,
+    error,
+  } = useMutation({
+    mutationFn: async ({ text }) => {
+      try {
+        const res = await fetch("/api/tasks/create", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text }),
+        });
+        const data = await res.json();
+
+        if (!res.ok) {
+          console.log(data.error);
+          throw new Error(data.error || "Something went wrong");
+        }
+
+        return data;
+      } catch (error) {
+        throw new Error(error);
+      }
+    },
+
+    onSuccess: () => {
+      // reset the form state
+      setText("");
+      queryClient.invalidateQueries({ queryKey: ["tasks"] });
+    },
+  });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    createPost({ text });
+  };
+
+  // logout function
   const { mutate: logout } = useMutation({
     mutationFn: async () => {
       try {
@@ -38,18 +86,13 @@ const Navbar = () => {
     document.documentElement.setAttribute("data-theme", newTheme); // Update HTML attribute
   };
 
-  const handleSubmit = () => {
-    alert(`Successfully added ${text}`);
-    setText("");
-  };
-
   return (
     <div className="container mx-auto">
       <div className="navbar bg-base-300 mt-2">
         <div className="flex-1">
           <p className="pl-5 text-2xl">Task Master</p>
         </div>
-        <div className="flex-none gap-2">
+        <div className="flex-none gap-2 mr-6">
           <div className="form-control w-14">
             <label className="label cursor-pointer">
               <input
@@ -85,8 +128,9 @@ const Navbar = () => {
                 value={text}
                 onChange={(e) => setText(e.target.value)}
               />
+              {isError && <div className="text-red-500">{error.message}</div>}
               <button className="btn btn-success ml-3" onClick={handleSubmit}>
-                Add
+                {isPending ? <LoadingSpinner size="sm" /> : "Add"}
               </button>
             </div>
             <form method="dialog" className="modal-backdrop">
@@ -94,16 +138,9 @@ const Navbar = () => {
             </form>
           </dialog>
           <div className="dropdown dropdown-end">
-            <div
-              tabIndex={0}
-              role="button"
-              className="btn btn-ghost btn-circle avatar"
-            >
+            <div tabIndex={0} role="button">
               <div className="w-10 rounded-full">
-                <img
-                  alt="Tailwind CSS Navbar component"
-                  src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
-                />
+                <p>{authUser.username}</p>
               </div>
             </div>
             <ul

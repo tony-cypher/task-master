@@ -7,7 +7,7 @@ const Tasks = () => {
   const { data: authUser } = useQuery({ queryKey: ["authUser"] });
   const username = authUser.username;
   const { data: posts, isLoading } = useQuery({
-    queryKey: ["posts"],
+    queryKey: ["tasks"],
     queryFn: async () => {
       try {
         const res = await fetch(`/api/tasks/user/${username}`);
