@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { VscError } from "react-icons/vsc";
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({
@@ -51,6 +52,12 @@ const LoginPage = () => {
   return (
     <div className="hero bg-base-300 absolute inset-0 flex items-center justify-center">
       <div className="hero-content flex-col w-5/6">
+        {isError && (
+          <div role="alert" className="alert alert-error w-full md:w-1/3 mt-3">
+            <VscError />
+            <span>{error.message}</span>
+          </div>
+        )}
         <div className="text-center p-3">
           <h1 className="text-4xl font-medium">Task Master | Login!</h1>
         </div>
@@ -91,10 +98,9 @@ const LoginPage = () => {
             </div>
             <div className="form-control mt-6">
               <button className="btn btn-primary">
-                {isPending ? "Loading" : "Login"}
+                {isPending ? "Loading..." : "Login"}
               </button>
             </div>
-            {isError && <p className="text-red-500">{error.message}</p>}
           </form>
           <div className="label mb-3 ml-5">
             <span className="label-text-alt">
