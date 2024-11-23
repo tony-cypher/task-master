@@ -3,12 +3,18 @@ import { FaPlus } from "react-icons/fa";
 
 const Navbar = () => {
   const [theme, setTheme] = useState("dark");
+  const [text, setText] = useState("");
 
   // Function to toggle the theme
   const handleToggle = () => {
     const newTheme = theme === "retro" ? "dark" : "retro"; // Switch themes
     setTheme(newTheme); // Update state
     document.documentElement.setAttribute("data-theme", newTheme); // Update HTML attribute
+  };
+
+  const handleSubmit = () => {
+    alert(`Successfully added ${text}`);
+    setText("");
   };
   return (
     <div className="container mx-auto">
@@ -34,13 +40,33 @@ const Navbar = () => {
               className="input input-bordered w-20 md:w-auto"
             />
           </div>
-          <ul className="menu menu-horizontal w-14">
-            <li>
-              <p>
-                <FaPlus />
-              </p>
-            </li>
-          </ul>
+          {/* Open the modal using document.getElementById('ID').showModal() method */}
+          <button
+            className="btn"
+            onClick={() => document.getElementById("my_modal_2").showModal()}
+          >
+            <FaPlus />
+          </button>
+          <dialog id="my_modal_2" className="modal">
+            <div className="modal-box">
+              <h3 className="font-bold text-lg text-center mb-3">
+                Create Task
+              </h3>
+              <input
+                type="text"
+                placeholder="create new task"
+                className="input input-bordered w-full max-w-sm"
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+              />
+              <button className="btn btn-success ml-3" onClick={handleSubmit}>
+                Add
+              </button>
+            </div>
+            <form method="dialog" className="modal-backdrop">
+              <button>close</button>
+            </form>
+          </dialog>
           <div className="dropdown dropdown-end">
             <div
               tabIndex={0}
