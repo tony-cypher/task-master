@@ -1,17 +1,17 @@
 import { POSTS } from "../../utils/db/dummy";
+import TaskSkeleton from "../skeletons/TaskSkeleton";
 import Task from "./Task";
 
 const Tasks = () => {
   const isLoading = false;
   return (
     <>
-      {/* {isLoading && (
-				<div className='flex flex-col justify-center'>
-					<PostSkeleton />
-					<PostSkeleton />
-					<PostSkeleton />
-				</div>
-			)} */}
+      {isLoading && (
+        <>
+          <TaskSkeleton />
+          <TaskSkeleton />
+        </>
+      )}
       {!isLoading && POSTS?.length === 0 && (
         <p className="text-center my-4">No Tasks</p>
       )}

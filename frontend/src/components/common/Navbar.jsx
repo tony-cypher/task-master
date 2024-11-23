@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { FaPlus } from "react-icons/fa";
 
 const Navbar = () => {
   const [theme, setTheme] = useState("dark");
@@ -13,7 +14,7 @@ const Navbar = () => {
     <div className="container mx-auto">
       <div className="navbar bg-base-300 mt-2">
         <div className="flex-1">
-          <a className="btn btn-ghost text-lg">Task Master</a>
+          <p className="pl-5 text-2xl">Task Master</p>
         </div>
         <div className="flex-none gap-2">
           <div className="form-control w-14">
@@ -35,7 +36,9 @@ const Navbar = () => {
           </div>
           <ul className="menu menu-horizontal w-14">
             <li>
-              <a>Link</a>
+              <p>
+                <FaPlus />
+              </p>
             </li>
           </ul>
           <div className="dropdown dropdown-end">
