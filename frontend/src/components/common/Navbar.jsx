@@ -3,6 +3,7 @@ import { FaPlus } from "react-icons/fa";
 import { useMutation } from "@tanstack/react-query";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import LoadingSpinner from "./LoadingSpinner";
+import toast from "react-hot-toast";
 
 const Navbar = () => {
   const [theme, setTheme] = useState("dark");
@@ -43,6 +44,7 @@ const Navbar = () => {
 
     onSuccess: () => {
       // reset the form state
+      toast.success("Task created successfully");
       setText("");
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
     },

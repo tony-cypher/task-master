@@ -4,6 +4,7 @@ import LoginPage from "./pages/auth/login/LoginPage";
 import SignupPage from "./pages/auth/signup/SignupPage";
 import HomePage from "./pages/home/HomePage";
 import LoadingSpinner from "./components/common/LoadingSpinner";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   const { data: authUser, isLoading } = useQuery({
@@ -54,6 +55,7 @@ function App() {
           element={!authUser ? <LoginPage /> : <Navigate to="/" />}
         ></Route>
       </Routes>
+      <Toaster />
     </div>
   );
 }
