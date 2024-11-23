@@ -1,9 +1,35 @@
 import { useState } from "react";
 import { FaPlus } from "react-icons/fa";
+import { useMutation } from "@tanstack/react-query";
 
 const Navbar = () => {
   const [theme, setTheme] = useState("dark");
   const [text, setText] = useState("");
+
+  const { mutate: logout } = useMutation({
+    mutationFn: async () => {
+      try {
+        const res = await fetch("/api/auth/logout/", {
+          method: "POST",
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Something went wrong");
+        console.log(data);
+        return data;
+      } catch (error) {
+        console.log(error);
+        throw error;
+      }
+    },
+    onSuccess: () => {
+      // refetch the authUser
+      window.location.href = "/login";
+    },
+    onError: () => {
+      console.error("Logout failed");
+    },
+  });
 
   // Function to toggle the theme
   const handleToggle = () => {
@@ -17,9 +43,6 @@ const Navbar = () => {
     setText("");
   };
 
-  const logout = () => {
-    window.location.href = "/login";
-  };
   return (
     <div className="container mx-auto">
       <div className="navbar bg-base-300 mt-2">
