@@ -16,6 +16,10 @@ const Navbar = () => {
     alert(`Successfully added ${text}`);
     setText("");
   };
+
+  const logout = () => {
+    window.location.href = "/login";
+  };
   return (
     <div className="container mx-auto">
       <div className="navbar bg-base-300 mt-2">
@@ -40,7 +44,6 @@ const Navbar = () => {
               className="input input-bordered w-20 md:w-auto"
             />
           </div>
-          {/* Open the modal using document.getElementById('ID').showModal() method */}
           <button
             className="btn"
             onClick={() => document.getElementById("my_modal_2").showModal()}
@@ -94,7 +97,7 @@ const Navbar = () => {
                 <a>Settings</a>
               </li>
               <li>
-                <a>Logout</a>
+                <p onClick={logout}>Logout</p>
               </li>
             </ul>
           </div>
