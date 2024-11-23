@@ -41,6 +41,12 @@ export const getUserTasks = async (req, res) => {
       return res.status(404).json({ error: "User not found" });
     }
 
+    if (user.username !== req.user.username) {
+      return res
+        .status(401)
+        .json({ message: "You are not authorized to view this task" });
+    }
+
     const tasks = await Task.find({ user: user._id })
       .sort({ createdAt: -1 })
       .populate({ path: "user", select: "-password" });

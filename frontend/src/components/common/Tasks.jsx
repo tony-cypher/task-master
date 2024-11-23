@@ -1,9 +1,29 @@
-import { POSTS } from "../../utils/db/dummy";
+// import { POSTS } from "../../utils/db/dummy";
 import TaskSkeleton from "../skeletons/TaskSkeleton";
+import { useQuery } from "@tanstack/react-query";
 import Task from "./Task";
 
 const Tasks = () => {
-  const isLoading = false;
+  const { data: authUser } = useQuery({ queryKey: ["authUser"] });
+  const username = authUser.username;
+  const { data: posts, isLoading } = useQuery({
+    queryKey: ["posts"],
+    queryFn: async () => {
+      try {
+        const res = await fetch(`/api/tasks/user/${username}`);
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.error || "Something went wrong");
+        }
+
+        return data;
+      } catch (error) {
+        throw new Error(error);
+      }
+    },
+  });
+
   return (
     <>
       {isLoading && (
@@ -12,12 +32,12 @@ const Tasks = () => {
           <TaskSkeleton />
         </>
       )}
-      {!isLoading && POSTS?.length === 0 && (
+      {!isLoading && posts?.length === 0 && (
         <p className="text-center my-4">No Tasks</p>
       )}
-      {!isLoading && POSTS && (
+      {!isLoading && posts && (
         <div className="flex flex-wrap justify-evenly gap-4 mt-8">
-          {POSTS.map((post) => (
+          {posts.map((post) => (
             <Task key={post._id} post={post} />
           ))}
         </div>

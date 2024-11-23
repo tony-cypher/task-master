@@ -27,7 +27,7 @@ const LoginPage = () => {
 
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || "Invalid Login credentials");
-        console.log(data);
+        // console.log(data);
         return data;
       } catch (error) {
         console.log(error);
