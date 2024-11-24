@@ -1,8 +1,7 @@
 import { useState } from "react";
-import { FaPlus } from "react-icons/fa";
+import { FaPencilAlt } from "react-icons/fa";
 import { useMutation } from "@tanstack/react-query";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import LoadingSpinner from "./LoadingSpinner";
 import toast from "react-hot-toast";
 
 const Navbar = () => {
@@ -16,12 +15,7 @@ const Navbar = () => {
   const queryClient = useQueryClient();
 
   // create post function
-  const {
-    mutate: createPost,
-    isPending,
-    isError,
-    error,
-  } = useMutation({
+  const { mutate: createPost } = useMutation({
     mutationFn: async ({ text }) => {
       try {
         const res = await fetch("/api/tasks/create", {
@@ -50,8 +44,7 @@ const Navbar = () => {
     },
   });
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = () => {
     createPost({ text });
   };
 
@@ -116,7 +109,7 @@ const Navbar = () => {
             className="btn"
             onClick={() => document.getElementById("my_modal_2").showModal()}
           >
-            <FaPlus />
+            <FaPencilAlt />
           </button>
           <dialog id="my_modal_2" className="modal">
             <div className="modal-box">
@@ -130,10 +123,11 @@ const Navbar = () => {
                 value={text}
                 onChange={(e) => setText(e.target.value)}
               />
-              {isError && <div className="text-red-500">{error.message}</div>}
-              <button className="btn btn-success ml-3" onClick={handleSubmit}>
-                {isPending ? <LoadingSpinner size="sm" /> : "Add"}
-              </button>
+              <form method="dialog">
+                <button className="btn btn-success ml-3" onClick={handleSubmit}>
+                  <FaPencilAlt />
+                </button>
+              </form>
             </div>
             <form method="dialog" className="modal-backdrop">
               <button>close</button>
