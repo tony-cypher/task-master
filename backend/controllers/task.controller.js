@@ -3,7 +3,7 @@ import User from "../models/user.model.js";
 
 export const createTask = async (req, res) => {
   try {
-    const { text } = req.body;
+    const { text, desc, priority, deadline_date } = req.body;
 
     const userId = req.user._id;
 
@@ -20,6 +20,9 @@ export const createTask = async (req, res) => {
     const newTask = new Task({
       user: userId,
       text,
+      desc,
+      priority,
+      deadline_date,
     });
 
     await newTask.save();
@@ -61,7 +64,7 @@ export const getUserTasks = async (req, res) => {
 export const updateTask = async (req, res) => {
   try {
     const { id } = req.params;
-    const { text } = req.body;
+    const { text, desc, priority, deadline_date } = req.body;
 
     const userId = req.user._id;
 
@@ -81,6 +84,9 @@ export const updateTask = async (req, res) => {
     }
 
     task.text = text || task.text;
+    task.desc = desc || task.desc;
+    task.priority = priority || task.priority;
+    task.deadline_date = deadline_date || task.deadline_date;
 
     task = await task.save();
 

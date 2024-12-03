@@ -4,6 +4,7 @@ import { FaPencilAlt } from "react-icons/fa";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import LoadingSpinner from "./LoadingSpinner";
+import { formatDate } from "../../utils/date/FormatDate.js";
 
 const Task = ({ post }) => {
   // const taskOwner = post.user;
@@ -81,7 +82,19 @@ const Task = ({ post }) => {
   return (
     <div className="card bg-base-300 shadow-lg flex-grow max-w-xs sm:max-w-sm md:max-w-md">
       <div className="card-body">
-        <p>{post.text}</p>
+        <p>
+          <span className="font-bold">Title:</span> {post.text}
+        </p>
+        <p>
+          <span className="font-bold">Desc:</span> {post.desc}
+        </p>
+        <p>
+          <span className="font-bold">Priority:</span> {post.priority}
+        </p>
+        <p>
+          <span className="font-bold">Deadline:</span>{" "}
+          {formatDate(post.deadline_date)}
+        </p>
 
         <div className="card-actions">
           <button className="btn btn-error" onClick={handleDeleteTask}>
