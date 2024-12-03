@@ -10,16 +10,26 @@ const Task = ({ post }) => {
   // const taskOwner = post.user;
   const queryClient = useQueryClient();
 
-  const [text, setText] = useState("");
+  // const [text, setText] = useState("");
+  const [formData, setFormData] = useState({
+    text: "",
+    desc: "",
+    priority: "",
+    deadline_date: "",
+  });
+
+  const handleInputChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   // update post
   const { mutate: updateTask } = useMutation({
-    mutationFn: async () => {
+    mutationFn: async ({ text, desc, priority, deadline_date }) => {
       try {
         const res = await fetch(`/api/tasks/update/${post._id}`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ text }),
+          body: JSON.stringify({ text, desc, priority, deadline_date }),
         });
         const data = await res.json();
 
@@ -37,7 +47,6 @@ const Task = ({ post }) => {
     onSuccess: () => {
       // reset the form state
       toast.success("Task updated successfully");
-      setText("");
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
     },
   });
@@ -73,12 +82,13 @@ const Task = ({ post }) => {
   };
 
   const handleUpdateTask = () => {
-    updateTask();
+    updateTask(formData);
   };
 
-  const handleInputChange = (e) => {
-    setText(e.target.value);
-  };
+  // const handleInputChange = (e) => {
+  //   setText(e.target.value);
+  // };
+
   return (
     <div className="card bg-base-300 shadow-lg flex-grow max-w-xs sm:max-w-sm md:max-w-md">
       <div className="card-body">
@@ -116,8 +126,37 @@ const Task = ({ post }) => {
                 type="text"
                 placeholder={post.text}
                 className="input input-bordered w-full max-w-sm"
+                name="text"
+                value={formData.text}
                 onChange={handleInputChange}
-                value={text}
+              />
+              <textarea
+                type="text"
+                className="textarea textarea-bordered w-full max-w-sm mt-2"
+                placeholder={post.desc}
+                name="desc"
+                value={formData.desc}
+                onChange={handleInputChange}
+              ></textarea>
+              <select
+                className="select select-bordered w-full max-w-sm mt-1"
+                onChange={handleInputChange}
+                value={formData.priority}
+                name="priority"
+              >
+                <option value="" disabled>
+                  {post.priority}
+                </option>
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+              </select>
+              <input
+                type="date"
+                className="input input-bordered w-full max-w-sm mt-2"
+                name="deadline_date"
+                value={formData.deadline_date}
+                onChange={handleInputChange}
               />
 
               <form method="dialog">
