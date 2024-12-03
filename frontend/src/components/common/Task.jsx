@@ -103,7 +103,7 @@ const Task = ({ post }) => {
         </p>
         <p>
           <span className="font-bold">Deadline:</span>{" "}
-          {post.deadline_date.split("T")[0]}
+          {post.deadline_date?.split("T")[0] || "No deadline available"}
         </p>
 
         <div className="card-actions">
