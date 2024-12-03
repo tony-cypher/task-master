@@ -4,7 +4,7 @@ import { FaPencilAlt } from "react-icons/fa";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import LoadingSpinner from "./LoadingSpinner";
-import { formatDate } from "../../utils/date/FormatDate.js";
+// import { formatDate } from "../../utils/date/FormatDate.js";
 
 const Task = ({ post }) => {
   // const taskOwner = post.user;
@@ -103,7 +103,7 @@ const Task = ({ post }) => {
         </p>
         <p>
           <span className="font-bold">Deadline:</span>{" "}
-          {formatDate(post.deadline_date)}
+          {post.deadline_date.split("T")[0]}
         </p>
 
         <div className="card-actions">
