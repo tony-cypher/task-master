@@ -79,10 +79,6 @@ export const updateTask = async (req, res) => {
         .json({ message: "You are not authorized to update this task" });
     }
 
-    if (!text) {
-      return res.status(400).json({ error: "Task must have some text" });
-    }
-
     task.text = text || task.text;
     task.desc = desc || task.desc;
     task.priority = priority || task.priority;
