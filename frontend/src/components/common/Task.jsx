@@ -101,7 +101,7 @@ const Task = ({ post }) => {
               </h3>
               <input
                 type="text"
-                placeholder="create new task"
+                placeholder={post.text}
                 className="input input-bordered w-full max-w-sm"
                 onChange={handleInputChange}
                 value={text}
@@ -109,7 +109,7 @@ const Task = ({ post }) => {
 
               <form method="dialog">
                 <button
-                  className="btn btn-success ml-3"
+                  className="btn btn-success ml-3 mt-3"
                   onClick={handleUpdateTask}
                 >
                   <FaPencilAlt />
