@@ -13,8 +13,8 @@ export const createTask = async (req, res) => {
       return res.status(400).json({ message: "User not found" });
     }
 
-    if (!text) {
-      return res.status(400).json({ error: "Task must have some text" });
+    if (!text || !desc || !priority || !deadline_date) {
+      return res.status(400).json({ error: "All fileds are required" });
     }
 
     const newTask = new Task({

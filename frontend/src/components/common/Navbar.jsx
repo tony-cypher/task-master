@@ -8,7 +8,23 @@ const Navbar = () => {
   const [theme, setTheme] = useState("dark");
 
   // create post
-  const [text, setText] = useState("");
+  // const [text, setText] = useState("");
+
+  const [formData, setFormData] = useState({
+    text: "",
+    desc: "",
+    priority: "",
+    deadline_date: "",
+  });
+
+  const handleInputChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = () => {
+    createPost(formData);
+    // console.log(formData);
+  };
 
   // get current user and reset query
   const { data: authUser } = useQuery({ queryKey: ["authUser"] });
@@ -16,17 +32,17 @@ const Navbar = () => {
 
   // create post function
   const { mutate: createPost } = useMutation({
-    mutationFn: async ({ text }) => {
+    mutationFn: async ({ text, desc, priority, deadline_date }) => {
       try {
         const res = await fetch("/api/tasks/create", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ text }),
+          body: JSON.stringify({ text, desc, priority, deadline_date }),
         });
         const data = await res.json();
 
         if (!res.ok) {
-          console.log(data.error);
+          toast.error(data.error);
           throw new Error(data.error || "Something went wrong");
         }
 
@@ -39,14 +55,15 @@ const Navbar = () => {
     onSuccess: () => {
       // reset the form state
       toast.success("Task created successfully");
-      setText("");
+      setFormData({
+        text: "",
+        desc: "",
+        priority: "",
+        deadline_date: "",
+      });
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
     },
   });
-
-  const handleSubmit = () => {
-    createPost({ text });
-  };
 
   // logout function
   const { mutate: logout } = useMutation({
@@ -120,11 +137,41 @@ const Navbar = () => {
                 type="text"
                 placeholder="create new task"
                 className="input input-bordered w-full max-w-sm"
-                value={text}
-                onChange={(e) => setText(e.target.value)}
+                name="text"
+                value={formData.text}
+                onChange={handleInputChange}
+              />
+              <textarea
+                type="text"
+                className="textarea textarea-bordered w-full max-w-sm mt-2"
+                placeholder="Description"
+                name="desc"
+                value={formData.desc}
+                onChange={handleInputChange}
+              ></textarea>
+              <select
+                className="select select-bordered w-full max-w-sm mt-1"
+                onChange={handleInputChange}
+                value={formData.priority}
+                name="priority"
+              >
+                <option value="" disabled>
+                  Choose priority
+                </option>
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+              </select>
+              <input
+                type="date"
+                placeholder="deadline"
+                className="input input-bordered w-full max-w-sm mt-2"
+                name="deadline_date"
+                value={formData.deadline_date}
+                onChange={handleInputChange}
               />
               <form method="dialog">
-                <button className="btn btn-success ml-3" onClick={handleSubmit}>
+                <button className="btn btn-success mt-3" onClick={handleSubmit}>
                   <FaPencilAlt />
                 </button>
               </form>
